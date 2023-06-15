@@ -1,0 +1,13 @@
+mongodb:
+    name: writeupminer
+    host: localhost
+    port: 27017
+
+args:
+    update: False
+    verbose: True
+    discord:
+        webhook: False
+    telegram:
+        token: 0000000000:AAFAAAAAAAAAAAAAAAAAAA
+        chatid: -1234567899999
