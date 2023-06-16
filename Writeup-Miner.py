@@ -1,6 +1,7 @@
-import argparse,pymongo,requests,time,os,sys,urllib.parse,feedparser,re
+import argparse,pymongo,requests,time,os,sys,urllib.parse,re
+import xml.etree.ElementTree as ET
 from colorama import Fore
-import yaml
+import yaml,ssl
 
 # Logging Function
 
@@ -112,6 +113,40 @@ def get_urls():
 
 # get feed
 
+def parsefeeds(url):
+    try:
+        rss_url = url
+        response = requests.get(rss_url)
+
+        if response.ok:
+            root = ET.fromstring(response.content)
+            feeds_list = []
+            feeds_obj = {}
+            for item in root.iter("item"):
+                title = item.find("title").text
+                guid = item.find("guid").text
+                published = item.find("pubDate").text
+                tags = item.findall("category")
+                tag_list = []
+                if tags != []:
+                    for tag in tags:
+                        tag_list.append(tag.text)
+                else:
+                    tag_list = []
+                feeds_obj = {"title": title, "url": guid, "published": published, "tags": tag_list}
+                feeds_list.append(feeds_obj)
+            return feeds_list
+                
+        else:
+            logger(True,"Error while fetching feeds","error")
+            exit(1)
+
+    except Exception as e:
+        logger(True,"{}".format(e),"error")
+        exit(1)
+
+
+
 def get_feed():
     try:
         logger(True,"Loading Urls.","pending")
@@ -119,21 +154,15 @@ def get_feed():
         logger(True,"Urls loaded Successfully","success")
         objects = []
         logger(True,"Loading New Feeds.","pending")
+
+        if hasattr(ssl, '_create_unverified_context'):
+            ssl._create_default_https_context = ssl._create_unverified_context
+
         for url in urls:
-            feed = feedparser.parse(url)
-            for entry in feed.entries:
-                Data = {"title":"","url":"","published":"","tags":[]}
-                Data["title"] = entry.title
-                Data["url"] = entry.guid
-                Data["published"] = entry.published
-                if 'tags' in entry.keys():
-                    tags_list = []
-                    for tags in entry.tags:
-                        if tags['term'] != None:
-                            tags_list.append(tags['term'])
-                    Data["tags"] = tags_list
-                if Data not in objects:
-                    objects.append(Data)
+            feeds = parsefeeds(url)
+            for feed in feeds:
+                if feed not in objects:
+                    objects.append(feed)
         logger(True,"New Feeds loaded Successfully","success")
         return objects
 
@@ -143,12 +172,15 @@ def get_feed():
 
 
 
-def updateDatabase(args,mydb,new_feeds):
+def updateDatabase(args,mydb,new_feeds,exist):
     try:
         logger(args.verbose,"Updating Database.",TYPE="pending")
         mycol = mydb["writeups"]
-        logger(args.verbose,"Removing previous collection.",TYPE="pending")
-        mycol.drop()
+        if exist:
+            logger(args.verbose,"Removing previous collection.",TYPE="pending")
+            mycol.drop()
+        else:
+            logger(args.verbose,"Creating new collection.",TYPE="pending")
         mycol.insert_many(new_feeds)
         logger(args.verbose,"Database Updated.",TYPE="success")
     except Exception as e:
@@ -206,7 +238,7 @@ def main():
 
     if args.update:
         new_feeds = get_feed()
-        updateDatabase(args,mydb,new_feeds)
+        updateDatabase(args,mydb,new_feeds,exist=is_exist)
         exit(0)
 
     if is_exist:
@@ -214,7 +246,7 @@ def main():
         check_database(args,mydb,new_feeds)
     else:
         new_feeds = get_feed()
-        updateDatabase(args,mydb,new_feeds)
+        updateDatabase(args,mydb,new_feeds,exist=is_exist)
 
 
 if __name__ == "__main__":

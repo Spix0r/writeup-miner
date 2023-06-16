@@ -1,4 +1,3 @@
 requests
 colorama
-feedparser
 pymongo
