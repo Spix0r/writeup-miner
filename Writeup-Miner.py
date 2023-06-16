@@ -117,7 +117,7 @@ def parsefeeds(url):
     try:
         rss_url = url
         response = requests.get(rss_url)
-
+        time.sleep(5)
         if response.ok:
             root = ET.fromstring(response.content)
             feeds_list = []
