@@ -23,5 +23,5 @@ python3 writeup-miner.py -v -w <Discord Webhook> -H <MongoDB host> -p <MongoDB p
 ```
 ### If you need to update Database
 ```bash
-python3 writeup-miner.py -v --update
+python3 writeup-miner.py -v -H <MongoDB host> -p <MongoDB port> -d <Database Name> --update
 ```
