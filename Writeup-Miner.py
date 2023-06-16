@@ -138,12 +138,14 @@ def parsefeeds(url):
             return feeds_list
                 
         else:
-            logger(True,"Error while fetching feeds","error")
-            exit(1)
+            logger(True,"Error while fetching feeds response : {}".format(response),"error")
+            logger(True,"Url : {}".format(rss_url),"error")
+            return []
+                
 
     except Exception as e:
-        logger(True,"{}".format(e),"error")
-        exit(1)
+
+        logger(True,"Error while fetching feeds Url : {}".format(rss_url),"error")
 
 
 
@@ -160,9 +162,10 @@ def get_feed():
 
         for url in urls:
             feeds = parsefeeds(url)
-            for feed in feeds:
-                if feed not in objects:
-                    objects.append(feed)
+            if feeds != [] and feeds != None:
+                for feed in feeds:
+                    if feed not in objects:
+                        objects.append(feed)
         logger(True,"New Feeds loaded Successfully","success")
         return objects
 
