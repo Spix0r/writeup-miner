@@ -41,7 +41,7 @@ def push_to_database(mydb, new_feed):
         exit(1)
 
 
-def check_database(mydb, new_feeds, token, chatid, filtered_words):
+def check_database(mydb, new_feeds, webhook, token, chatid, filtered_words):
     try:
         logger("Checking for new posts.", "INF")
         mycol = mydb["writeups"]
@@ -54,7 +54,7 @@ def check_database(mydb, new_feeds, token, chatid, filtered_words):
             if new_feed["url"] not in urls:
                 logger("New Feed Found : "+new_feed["title"], "OK")
                 push_to_database(mydb, new_feed)
-                notify(token, chatid, new_feed, filtered_words)
+                notify(new_feed, filtered_words, webhook, token, chatid)
     except Exception as e:
         logger("{}".format(e), "ERR")
         exit(1)

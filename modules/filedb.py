@@ -42,7 +42,7 @@ def loadDatabase(filename):
 
 ## Check for new feeds
 
-def checkDatabase(newFeeds, filename, token, chatid, filtered_words):
+def checkDatabase(newFeeds, filename, webhook, token, chatid, filtered_words):
     oldFeeds = loadDatabase(filename)
     feedsToUpdate = oldFeeds
     counter = 0
@@ -51,7 +51,7 @@ def checkDatabase(newFeeds, filename, token, chatid, filtered_words):
         if feed["url"].strip() not in oldFeeds:
             counter += 1
             logger("New feed found {}".format(feed["url"].strip()), "OK")
-            notify(token, chatid, feed, filtered_words)
+            notify(feed, filtered_words, webhook, token, chatid)
             feedsToUpdate.append(feed["url"].strip())
     pushDatabase(feedsToUpdate, filename)
     logger("Job done! Total New feeds found : {}".format(counter), "OK")
