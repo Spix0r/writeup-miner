@@ -31,7 +31,7 @@ def setup_argparse():
     parser.add_argument("-d", "--database", help="MongoDB Database name to store feeds on it", default="writeupminer")
     parser.add_argument("-l", "--urls", help="urls.txt list file path", default=f"{WORKINGDIR}/res/urls.txt")
     parser.add_argument("-m", "--dbmode", help="db mode (file/mongo)", default="file")
-    parser.add_argument("-f", "--filter", help="filter some words in feed's title", default=f"{WORKINGDIR}/res/filters.txt")
+    parser.add_argument("-f", "--filter", help="A .txt file containing filter words is used to filter specific words from the feed's title.", default=f"{WORKINGDIR}/res/filters.txt")
     parser.add_argument("-u", "--update", action="store_true", help="Update Database")
     parser.add_argument("-t", "--token", help="Telegram Bot token")
     parser.add_argument("-c", "--chatid", help="Telegram chatid")
