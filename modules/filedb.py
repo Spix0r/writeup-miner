@@ -24,19 +24,25 @@ def pushDatabase(data, filename):
 
 def loadDatabase(filename):
     try:
+
         with open(filename, 'r') as file:
             dataList = file.readlines()
             dataList = [data.strip() for data in dataList]
+
     except FileNotFoundError:
         logger(f"Error ! {filename} not found!", "ERR")
-        exit(1)
-
+        return []
+    
+    except Exception as e:
+        logger(f"Error : {e}", "ERR")
+        return []
+    
     logger("File : {} loaded successfully.".format(filename), "OK")
     return dataList
 
 ## Check for new feeds
 
-def checkDatabase(newFeeds, filename, token, chatid):
+def checkDatabase(newFeeds, filename, token, chatid, filtered_words):
     oldFeeds = loadDatabase(filename)
     feedsToUpdate = oldFeeds
     counter = 0
@@ -45,7 +51,7 @@ def checkDatabase(newFeeds, filename, token, chatid):
         if feed["url"].strip() not in oldFeeds:
             counter += 1
             logger("New feed found {}".format(feed["url"].strip()), "OK")
-            notify(token, chatid, feed)
+            notify(token, chatid, feed, filtered_words)
             feedsToUpdate.append(feed["url"].strip())
     pushDatabase(feedsToUpdate, filename)
     logger("Job done! Total New feeds found : {}".format(counter), "OK")
