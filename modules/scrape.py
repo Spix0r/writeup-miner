@@ -23,7 +23,7 @@ def parsefeeds(rss_url):
                     tag_list = []
                 feeds_obj = {"title": title, "url": guid, "published": published, "tags": tag_list}
                 feeds_list.append(feeds_obj)
-            logger("{} fetched".format(rss_url), "OK")
+            logger("{} fetched".format(rss_url), "INF")
             return feeds_list
                 
         else:
