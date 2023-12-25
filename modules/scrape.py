@@ -2,9 +2,8 @@ import xml.etree.ElementTree as ET
 from .Logger import logger
 import requests,time,ssl
 
-def parsefeeds(url):
+def parsefeeds(rss_url):
     try:
-        rss_url = url
         response = requests.get(rss_url)
         time.sleep(5)
         if response.ok:
@@ -24,6 +23,7 @@ def parsefeeds(url):
                     tag_list = []
                 feeds_obj = {"title": title, "url": guid, "published": published, "tags": tag_list}
                 feeds_list.append(feeds_obj)
+            logger("{} fetched".format(rss_url), "OK")
             return feeds_list
                 
         else:

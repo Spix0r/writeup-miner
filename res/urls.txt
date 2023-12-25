@@ -1,2 +1,2 @@
 https://medium.com/feed/tag/TAG_NAME
-https://USERNAME.medium.com/
+https://USERNAME.medium.com/feed

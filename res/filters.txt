@@ -1,0 +1,2 @@
+filteredword1
+filteredword2
