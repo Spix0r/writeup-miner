@@ -18,7 +18,7 @@ def makeDatabaseDir(dirname):
 def pushDatabase(data, filename):
     with open(filename,'w') as f:
         for i in data:
-            f.write(i+"\n")
+            f.write(i.strip()+"\n")
 
 ## Load Datbase
 
@@ -55,4 +55,3 @@ def checkDatabase(newFeeds, filename, webhook, token, chatid, filtered_words):
             feedsToUpdate.append(feed["url"].strip())
     pushDatabase(feedsToUpdate, filename)
     logger("Job done! Total New feeds found : {}".format(counter), "OK")
-
