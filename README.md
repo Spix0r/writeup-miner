@@ -130,5 +130,3 @@ python3 writeup-miner.py -h
 | `-v`, `--version`   | Display version information                           | N/A                                           |
 
 ---
-
-Let me know if you need further adjustments!
